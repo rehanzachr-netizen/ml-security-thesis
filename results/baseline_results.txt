@@ -1,0 +1,7 @@
+MNIST Baseline Model Results
+========================================
+Model: SimpleCNN
+Training epochs: 3
+Final training accuracy: 98.80%
+Test accuracy: 99.09%
+Total parameters: 421,642

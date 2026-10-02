@@ -1,0 +1,15 @@
+MASTER RESULTS TABLE
+Thesis: Securing Machine Learning Models
+========================================================
+Defense                      Clean   FGSM 0.3    PGD 0.3
+--------------------------------------------------------
+Baseline (no defense)       99.09%     68.87%     31.53%
+Adversarial training        98.97%     97.01%     71.72%
+Gaussian smoothing          99.09%     82.41%     78.44%
+Bit-depth reduction         99.09%     67.46%     29.86%
+
+Key findings:
+1. Adversarial training is the strongest defense overall
+2. Gaussian smoothing is highly effective against PGD
+3. Bit-depth reduction provides minimal improvement
+4. All defenses maintain high clean accuracy (>98%)

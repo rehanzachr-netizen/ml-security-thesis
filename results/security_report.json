@@ -1,0 +1,38 @@
+{
+  "generated": "2026-06-19T07:44:23.723493",
+  "clean_accuracy": 99.4,
+  "attacks": {
+    "FGSM e=0.1": {
+      "accuracy": 94.4,
+      "risk_score": 7.5,
+      "risk_level": "LOW"
+    },
+    "FGSM e=0.3": {
+      "accuracy": 62.8,
+      "risk_score": 54.9,
+      "risk_level": "HIGH"
+    },
+    "PGD  e=0.1": {
+      "accuracy": 89.4,
+      "risk_score": 15.0,
+      "risk_level": "LOW"
+    },
+    "PGD  e=0.3": {
+      "accuracy": 29.6,
+      "risk_score": 100,
+      "risk_level": "CRITICAL"
+    }
+  },
+  "defenses": {
+    "Gaussian smoothing": {
+      "accuracy": 79.4,
+      "risk_score": 30.0,
+      "risk_level": "MEDIUM"
+    },
+    "Bit-depth reduction": {
+      "accuracy": 61.0,
+      "risk_score": 57.6,
+      "risk_level": "HIGH"
+    }
+  }
+}

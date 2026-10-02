@@ -1,0 +1,7 @@
+Membership Inference Attack Results
+========================================
+Threshold: 0.95
+Members avg confidence    : 0.9930
+Non-members avg confidence: 0.9891
+Attack accuracy           : 96.5%
+Random baseline           : 50.0%

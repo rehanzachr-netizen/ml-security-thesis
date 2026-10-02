@@ -1,0 +1,19 @@
+CIFAR-10 Baseline Model Results
+========================================
+Model: ResNet-18 (modified for 32x32)
+Training epochs: 5
+Final training accuracy: 89.16%
+Test accuracy: 82.80%
+Total parameters: 11,173,962
+
+Per-class accuracy:
+  airplane: 86.4%
+  car: 83.5%
+  bird: 63.1%
+  cat: 65.3%
+  deer: 81.2%
+  dog: 84.9%
+  frog: 92.5%
+  horse: 88.7%
+  ship: 92.8%
+  truck: 89.6%

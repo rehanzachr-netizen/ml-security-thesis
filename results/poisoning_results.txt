@@ -1,0 +1,9 @@
+Label Flipping Poisoning Attack Results
+========================================
+Source class: 9, Target class: 4
+
+Poison rate=0%: Overall=99.1%  Class-9 accuracy=98.6%
+Poison rate=10%: Overall=99.0%  Class-9 accuracy=98.0%
+Poison rate=20%: Overall=99.1%  Class-9 accuracy=97.7%
+Poison rate=50%: Overall=89.3%  Class-9 accuracy=0.5%
+Poison rate=100%: Overall=89.2%  Class-9 accuracy=0.0%

@@ -1,0 +1,7 @@
+Input Preprocessing Defense Results
+========================================
+Epsilon: 0.3
+
+No defense    — FGSM: 68.87%  PGD: 31.42%
+Gaussian blur — FGSM: 82.41%  PGD: 78.44%
+Bit reduction — FGSM: 67.46%  PGD: 29.86%
