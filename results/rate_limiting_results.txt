@@ -1,0 +1,8 @@
+Rate Limiting vs Model Extraction
+=============================================
+Attacker tries to send 8,000 queries; fidelity measured on 2,000 hold-out images
+
+No defense: queries answered=8000  requests refused=0  copy fidelity=98.95%
+Label only: queries answered=8000  requests refused=0  copy fidelity=98.90%
+Limit 500 queries: queries answered=500  requests refused=75  copy fidelity=94.75%
+Limit 500 queries + label only: queries answered=500  requests refused=75  copy fidelity=93.60%

@@ -1,0 +1,13 @@
+Model Extraction Attack Results on MNIST
+=============================================
+Victim: baseline SimpleCNN. Substitute: SimpleCNN, 600 training steps.
+Fidelity and accuracy measured on 2,000 hold-out test images.
+
+Queries=  100  API output=probabilities  Fidelity=80.05%  Accuracy=80.05%
+Queries=  100  API output=label only     Fidelity=79.45%  Accuracy=79.65%
+Queries=  500  API output=probabilities  Fidelity=94.75%  Accuracy=94.80%
+Queries=  500  API output=label only     Fidelity=93.60%  Accuracy=93.70%
+Queries= 2000  API output=probabilities  Fidelity=97.90%  Accuracy=97.85%
+Queries= 2000  API output=label only     Fidelity=97.10%  Accuracy=97.25%
+Queries= 8000  API output=probabilities  Fidelity=98.95%  Accuracy=98.75%
+Queries= 8000  API output=label only     Fidelity=98.90%  Accuracy=98.85%

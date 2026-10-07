@@ -1,0 +1,9 @@
+Model Watermarking Results
+=============================================
+Trigger set: 100 random-noise images with random labels
+Clean accuracy measured on test images 5000-9999
+
+Baseline (no watermark): clean accuracy=99.60%  trigger matches=16/100  chance of luck=4.0e-02
+Adversarially trained (independent): clean accuracy=99.20%  trigger matches=8/100  chance of luck=7.9e-01
+Watermarked model: clean accuracy=99.58%  trigger matches=100/100  chance of luck=1.0e-100
+Stolen copy after fine-tuning: clean accuracy=99.50%  trigger matches=95/100  chance of luck=4.5e-88

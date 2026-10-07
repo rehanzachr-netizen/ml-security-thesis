@@ -1,0 +1,8 @@
+Backdoor (BadNets) Attack Results on MNIST
+=============================================
+Trigger: white 3x3 square (rows/cols 24-26), target class 0
+
+Poison rate=0.0%: Clean accuracy=99.09%  Backdoor success=0.10%
+Poison rate=0.5%: Clean accuracy=98.88%  Backdoor success=98.04%
+Poison rate=1.0%: Clean accuracy=98.83%  Backdoor success=99.76%
+Poison rate=5.0%: Clean accuracy=98.89%  Backdoor success=99.99%

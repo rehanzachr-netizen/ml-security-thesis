@@ -1,0 +1,11 @@
+.git
+.gitignore
+.ipynb_checkpoints
+**/.ipynb_checkpoints
+__pycache__
+data
+figures
+notebooks
+results
+models/cifar10_resnet18_baseline.pth
+*.md

@@ -45,20 +45,30 @@ class SimpleCNN(nn.Module):
         x = self.dropout(x)
         return self.fc2(x)
 
+# ── Valid image range ────────────────────────────────────────────
+# Pixels run from 0 (black) to 1 (white). After normalisation those limits
+# become X_MIN and X_MAX. Epsilon is given in pixel units (0-1 scale).
+MEAN, STD = 0.1307, 0.3081
+X_MIN = (0.0 - MEAN) / STD
+X_MAX = (1.0 - MEAN) / STD
+
 # ── Attack functions ─────────────────────────────────────────────
 def fgsm_attack(model, images, labels, epsilon):
-    images.requires_grad = True
+    images = images.clone().detach().requires_grad_(True)
     loss = nn.CrossEntropyLoss()(model(images), labels)
     model.zero_grad()
     loss.backward()
     return torch.clamp(
-        images + epsilon * images.grad.data.sign(), -1, 1
+        images + (epsilon / STD) * images.grad.data.sign(), X_MIN, X_MAX
     ).detach()
 
-def pgd_attack(model, images, labels, epsilon=0.3, alpha=0.01, steps=40):
+def pgd_attack(model, images, labels, epsilon=0.3, alpha=None, steps=40):
+    if alpha is None:
+        alpha = epsilon / 10
+    eps_n, alpha_n = epsilon / STD, alpha / STD
     adv = torch.clamp(
-        images + torch.empty_like(images).uniform_(-epsilon, epsilon),
-        -1, 1
+        images + torch.empty_like(images).uniform_(-eps_n, eps_n),
+        X_MIN, X_MAX
     ).detach()
     for _ in range(steps):
         adv.requires_grad = True
@@ -67,9 +77,9 @@ def pgd_attack(model, images, labels, epsilon=0.3, alpha=0.01, steps=40):
         loss.backward()
         adv = torch.clamp(
             images + torch.clamp(
-                adv + alpha * adv.grad.sign() - images,
-                -epsilon, epsilon
-            ), -1, 1
+                adv + alpha_n * adv.grad.sign() - images,
+                -eps_n, eps_n
+            ), X_MIN, X_MAX
         ).detach()
     return adv
 
@@ -85,10 +95,10 @@ def gaussian_smoothing(images):
                     groups=images.shape[1]).detach()
 
 def bit_depth_reduction(images, bits=4):
-    imgs = (images + 1) / 2
-    levels = 2 ** bits
-    imgs = torch.round(imgs * levels) / levels
-    return (imgs * 2 - 1).detach()
+    pixels = (images * STD + MEAN).clamp(0, 1)      # back to 0-1 pixel values
+    levels = 2 ** bits - 1
+    pixels = torch.round(pixels * levels) / levels  # keep only 2^bits grey levels
+    return ((pixels - MEAN) / STD).detach()
 
 # ── Evaluation ───────────────────────────────────────────────────
 def evaluate(model, loader, attack_fn=None, epsilon=0.3,
@@ -304,7 +314,7 @@ def main():
                                                "adversarial_training"],
                         help="Defense to evaluate")
     parser.add_argument("--epsilon", type=float, default=0.3,
-                        help="Attack strength (default: 0.3)")
+                        help="Attack strength in pixel units, 0-1 scale (default: 0.3)")
     parser.add_argument("--report",  action="store_true",
                         help="Generate full security report")
     parser.add_argument("--samples", type=int, default=500,

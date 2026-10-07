@@ -1,0 +1,7 @@
+Carlini & Wagner L2 Attack Results on MNIST
+=============================================
+Settings: 5 binary search steps, 100 optimisation steps, lr 0.1, kappa 0
+Distances are in pixel units (0-1 scale)
+
+Baseline: images=500  success=100.0%  mean L2=1.340  median L2=1.345  mean Linf=0.427
+Adversarially trained: images=500  success=99.2%  mean L2=2.128  median L2=1.882  mean Linf=0.720

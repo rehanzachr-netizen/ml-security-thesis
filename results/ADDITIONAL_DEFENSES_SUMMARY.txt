@@ -1,0 +1,26 @@
+ADDITIONAL DEFENSES - SUMMARY
+============================================================
+
+1. Confidence calibration (temperature scaling)
+   Before (T = 1): accuracy 99.60%, ECE 0.17%, confidence when wrong on FGSM examples 70.8%
+   After  (T = 1.09): accuracy 99.60%, ECE 0.21%, confidence when wrong on FGSM examples 68.6%
+
+2. DP-SGD (differentially private training)
+   Baseline (no DP): epsilon none, test accuracy 99.09%, membership AUC 0.566
+   DP-SGD, noise=0.6: epsilon 3.99, test accuracy 95.33%, membership AUC 0.548
+   DP-SGD, noise=1.0: epsilon 0.79, test accuracy 93.56%, membership AUC 0.551
+
+3. Data integrity checks
+   6 files fingerprinted; single flipped label detected
+
+4. Rate limiting vs model extraction
+   No defense: 8000 queries answered, copy fidelity 98.95%
+   Label only: 8000 queries answered, copy fidelity 98.90%
+   Limit 500 queries: 500 queries answered, copy fidelity 94.75%
+   Limit 500 queries + label only: 500 queries answered, copy fidelity 93.60%
+
+5. Model watermarking
+   Baseline (no watermark): clean accuracy 99.60%, trigger matches 16/100
+   Adversarially trained (independent): clean accuracy 99.20%, trigger matches 8/100
+   Watermarked model: clean accuracy 99.58%, trigger matches 100/100
+   Stolen copy after fine-tuning: clean accuracy 99.50%, trigger matches 95/100

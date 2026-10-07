@@ -1,0 +1,14 @@
+# Python packages used by the notebooks and the CLI tool.
+# Install PyTorch first (CPU build):
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+# then:
+#   pip install -r requirements.txt
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+scipy
+tqdm
+jupyter
+opacus

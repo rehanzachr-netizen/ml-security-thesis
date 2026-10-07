@@ -1,0 +1,31 @@
+Explainability and Error Analysis Results
+=============================================
+
+FGSM (epsilon=0.3) fooled the baseline model on 1782 of 2000 test images
+Saliency on digit strokes, clean images      : 30.9%
+Saliency on digit strokes, adversarial images: 21.0%
+
+Accuracy under PGD (epsilon=0.3, 2000 images)
+  Baseline model        : 0.00%
+  Adversarially trained : 88.40%
+  Per digit (baseline / adversarially trained):
+    0: 0.0% / 98.3%
+    1: 0.0% / 96.6%
+    2: 0.0% / 93.6%
+    3: 0.0% / 87.9%
+    4: 0.0% / 87.1%
+    5: 0.0% / 88.3%
+    6: 0.0% / 89.3%
+    7: 0.0% / 84.4%
+    8: 0.0% / 72.4%
+    9: 0.0% / 85.1%
+  Most common baseline mistakes under PGD:
+    true 4 -> predicted 9: 152 images
+    true 2 -> predicted 3: 129 images
+    true 7 -> predicted 3: 111 images
+    true 8 -> predicted 3: 96 images
+    true 5 -> predicted 3: 92 images
+
+Share of saliency inside the backdoor trigger area (area = 1.1% of the image)
+  Backdoored model : 27.4%
+  Baseline model   : 1.9%

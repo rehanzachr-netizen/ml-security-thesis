@@ -1,0 +1,7 @@
+Temperature Scaling Calibration Results
+=============================================
+Learned temperature T = 1.089
+T fitted on test images 0-4999, evaluated on test images 5000-9999
+
+Before (T = 1): accuracy=99.60%  ECE=0.17%  NLL=0.0127  mean confidence on misclassified FGSM examples=70.8%
+After  (T = 1.09): accuracy=99.60%  ECE=0.21%  NLL=0.0130  mean confidence on misclassified FGSM examples=68.6%

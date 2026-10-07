@@ -1,0 +1,8 @@
+DP-SGD Results on MNIST
+=============================================
+Settings: 5 epochs, Adam lr 0.002, batch 256, clipping norm 1.0, delta 1e-05
+Membership AUC: confidence-based attack, 5,000 members vs 5,000 non-members
+
+Baseline (no DP): epsilon=none  train acc=99.28%  test acc=99.09%  membership AUC=0.566
+DP-SGD, noise=0.6: epsilon=3.99  train acc=94.99%  test acc=95.33%  membership AUC=0.548
+DP-SGD, noise=1.0: epsilon=0.79  train acc=93.47%  test acc=93.56%  membership AUC=0.551

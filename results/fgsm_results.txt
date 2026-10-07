@@ -1,8 +1,10 @@
 FGSM Attack Results on MNIST
 ========================================
+Epsilon is in pixel units (0-1 scale)
 Epsilon=0.00: Accuracy=99.09%  Attack success=0.91%
-Epsilon=0.05: Accuracy=97.49%  Attack success=2.51%
-Epsilon=0.10: Accuracy=95.03%  Attack success=4.97%
-Epsilon=0.20: Accuracy=85.44%  Attack success=14.56%
-Epsilon=0.30: Accuracy=68.87%  Attack success=31.13%
-Epsilon=0.50: Accuracy=34.97%  Attack success=65.03%
+Epsilon=0.05: Accuracy=96.04%  Attack success=3.96%
+Epsilon=0.10: Accuracy=86.81%  Attack success=13.19%
+Epsilon=0.15: Accuracy=69.73%  Attack success=30.27%
+Epsilon=0.20: Accuracy=47.74%  Attack success=52.26%
+Epsilon=0.25: Accuracy=25.82%  Attack success=74.18%
+Epsilon=0.30: Accuracy=12.82%  Attack success=87.18%

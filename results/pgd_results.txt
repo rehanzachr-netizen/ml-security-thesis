@@ -1,7 +1,8 @@
 PGD Attack Results on MNIST
 ========================================
-Epsilon: 0.3, Alpha: 0.01, Steps: 40
+Epsilon in pixel units (0-1 scale), step size = epsilon/10, steps = 40
 
 Clean accuracy : 99.09%
-FGSM accuracy  : 68.87%
-PGD accuracy   : 31.53%
+Epsilon=0.1: FGSM accuracy=86.81%  PGD accuracy=72.73%
+Epsilon=0.2: FGSM accuracy=47.74%  PGD accuracy=0.60%
+Epsilon=0.3: FGSM accuracy=12.82%  PGD accuracy=0.00%
