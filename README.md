@@ -20,7 +20,7 @@ This project studies how machine learning models can be attacked and how they ca
 2. **Attack them** with seven attacks covering evasion, data poisoning, privacy leakage and model theft.
 3. **Defend them** with practical defenses and measure the trade-off between clean accuracy and robustness.
 
-The experiments are packaged as six reproducible Jupyter notebooks and a command-line tool that runs attacks and defenses and outputs a security risk score. The tool can also be run in a Docker container.
+The experiments are packaged as seven reproducible Jupyter notebooks and a command-line tool that runs attacks and defenses and outputs a security risk score. The tool can also be run in a Docker container. The practical recommendations that follow from the experiments are collected in [`SECURITY_CHECKLIST.md`](SECURITY_CHECKLIST.md).
 
 All experiments use small models and public datasets, so the whole project runs on a normal laptop CPU without a GPU.
 
@@ -36,11 +36,13 @@ ml-security-thesis/
 │   ├── 03_defenses.ipynb             # Adversarial training, input preprocessing, summary
 │   ├── 04_additional_attacks.ipynb   # Carlini & Wagner, backdoor, model extraction
 │   ├── 05_additional_defenses.ipynb  # Calibration, DP-SGD, integrity checks, rate limiting, watermarking
-│   └── 06_explainability.ipynb       # Saliency maps and error analysis
+│   ├── 06_explainability.ipynb       # Saliency maps and error analysis
+│   └── 07_ablation_study.ipynb       # Which attack and defense settings matter
 ├── models/                           # Trained model weights (.pth)
 ├── figures/                          # All generated plots used in the thesis
 ├── results/                          # Experiment results (.txt, .json)
 ├── ml_security_cli.py                # Command-line security evaluation tool
+├── SECURITY_CHECKLIST.md             # ML security checklist backed by the experiments
 ├── Dockerfile                        # Container image for the CLI tool
 ├── requirements.txt                  # Python packages used by the project
 └── .gitignore
@@ -91,8 +93,9 @@ Open the `notebooks` folder and run the notebooks **in order**. Inside each note
 | `04_additional_attacks` | Carlini & Wagner attack, backdoor attack, model extraction | ~15 minutes |
 | `05_additional_defenses` | Calibration, DP-SGD, data integrity checks, rate limiting, watermarking | ~20 minutes |
 | `06_explainability` | Saliency maps, error analysis under PGD, explaining the backdoor (needs notebook 4 to have been run) | ~3 minutes |
+| `07_ablation_study` | Ablations: attack steps, adversarial-training settings, training budget, preprocessing strength (needs notebook 3 to have been run) | ~45-60 minutes |
 
-**Notebook 1 must be run at least once on a new machine**, because it downloads the datasets that the other notebooks and the CLI tool rely on. The trained models are already included in `models/`, so once the data is downloaded, Notebooks 2 to 6 can be run without retraining the baselines. Notebook 5 needs the Opacus library, which is included in `requirements.txt`.
+**Notebook 1 must be run at least once on a new machine**, because it downloads the datasets that the other notebooks and the CLI tool rely on. The trained models are already included in `models/`, so once the data is downloaded, Notebooks 2 to 7 can be run without retraining the baselines. Notebook 5 needs the Opacus library, which is included in `requirements.txt`.
 
 ---
 
@@ -161,7 +164,7 @@ docker run --rm -v "%cd%\results:/app/results" ml-security-cli --report
 
 ## Key results
 
-All attack and defense results are on MNIST. The values below come from one full run of the six notebooks; small differences between machines and PyTorch versions are normal.
+All attack and defense results are on MNIST. The values below come from one full run of the seven notebooks; small differences between machines and PyTorch versions are normal.
 
 **Baselines (notebook 1)**
 
@@ -210,6 +213,55 @@ All attack and defense results are on MNIST. The values below come from one full
 - On images that FGSM fools, the share of saliency lying on the digit's own strokes drops from 30.9% to 21.0%: the model's attention moves off the digit.
 - Under PGD (ε = 0.3) every digit is misclassified by the baseline model, most often 4 as 9 and 2, 7, 8 and 5 as 3. The PGD-trained model is weakest on the digit 8 (72.4% robust accuracy).
 
+**Ablation study (notebook 7)**
+
+Each setting is changed one at a time and measured on 2,000 test images, with PGD-40 at ε = 0.3 unless stated otherwise. The models in parts B and C are trained for 2 epochs only, so their numbers are lower than those of the 5-epoch model in notebook 3. Full output: `results/ablation_results.txt`.
+
+*A. How many attack steps are needed (baseline and the PGD-trained model from notebook 3)*
+
+| PGD steps | 1 | 5 | 10 | 20 | 40 | 100 |
+|---|---|---|---|---|---|---|
+| Baseline | 5.75% | 0.00% | 0.00% | 0.00% | 0.00% | 0.00% |
+| PGD-trained | 94.45% | 91.35% | 90.00% | 89.20% | 88.40% | 88.10% |
+
+The attack has almost stopped improving at 40 steps (88.40% → 88.10% at 100 steps). Without the random starting point, the same 40-step attack is stronger and lowers robust accuracy to 83.20%, so the notebook 3 figure of 91.00% (measured with a random start) is somewhat optimistic.
+
+*B. How many attack steps are used during adversarial training (trained at ε = 0.3)*
+
+| Training setting | Clean | FGSM | PGD |
+|---|---|---|---|
+| 1 step | 98.15% | 97.30% | 0.00% |
+| 3 steps | 98.10% | 88.15% | 62.45% |
+| 10 steps (reference) | 97.35% | 90.25% | 80.40% |
+| 10 steps, adversarial images only (no clean images) | 68.05% | 50.20% | 42.95% |
+
+Training with a 1-step attack repeats the FGSM-training failure from notebook 3; 3 steps already gives real robustness and 10 steps more. Training only on adversarial images was unstable: clean accuracy fell to 68.05% in this run, while a test run of the same setting on another machine reached 90.10% clean and 72.75% under PGD. Mixing clean and adversarial images gives a stable result.
+
+*C. Training budget against attack budget (accuracy under PGD-40)*
+
+| Model | Clean | ε = 0.1 | ε = 0.2 | ε = 0.3 |
+|---|---|---|---|---|
+| No defense | 98.60% | 67.40% | 0.35% | 0.00% |
+| Trained with ε = 0.1 | 98.30% | 93.35% | 58.50% | 0.10% |
+| Trained with ε = 0.2 | 98.15% | 94.60% | 86.05% | 9.60% |
+| Trained with ε = 0.3 | 97.35% | 92.15% | 87.90% | 80.40% |
+
+A model is robust up to the budget it was trained for and fails beyond it.
+
+*D. Strength of input preprocessing (baseline model, accuracy under PGD-40)*
+
+| Preprocessing | Clean | ε = 0.1 | ε = 0.2 | ε = 0.3 |
+|---|---|---|---|---|
+| None | 98.60% | 67.40% | 0.35% | 0.00% |
+| Gaussian blur, σ = 0.5 | 98.40% | 78.40% | 4.40% | 0.00% |
+| Gaussian blur, σ = 1.0 | 98.05% | 87.40% | 37.25% | 0.85% |
+| Gaussian blur, σ = 2.0 | 95.25% | 88.20% | 69.80% | 37.15% |
+| Bit depth, 4 bits | 98.55% | 79.35% | 0.45% | 0.00% |
+| Bit depth, 2 bits | 98.60% | 95.20% | 0.00% | 0.00% |
+| Bit depth, 1 bit | 98.65% | 96.40% | 90.90% | 82.30% |
+
+Preprocessing helps at ε = 0.1 at every strength. At ε = 0.3 only the strongest settings help: 1-bit reduction (82.30%, because MNIST digits are almost black and white) and σ = 2 blur (37.15%, at a cost of 3.35 points of clean accuracy). These numbers are against an attacker who does not know about the preprocessing; an attacker who does can attack through it, so they are best-case values.
+
 **Main findings**
 
 - Iterative attacks (PGD) are far more damaging than single-step attacks (FGSM) at the same perturbation budget: at ε = 0.3 PGD reduces the undefended model to 0% accuracy. The Carlini & Wagner attack fools every tested image on the undefended model.
@@ -218,7 +270,9 @@ All attack and defense results are on MNIST. The values below come from one full
 - The simple confidence-based membership inference attack does not succeed against this model, which generalises well.
 - PGD adversarial training is the only tested defense that survives PGD (91.00%), at a cost of 0.6 points of clean accuracy.
 - FGSM adversarial training looks robust against FGSM (98.70%) but collapses to 0% under PGD, which shows that a defense must be evaluated against the strongest available attack.
-- Input preprocessing (smoothing, bit-depth reduction) does not withstand attacks at ε = 0.3.
+- Input preprocessing helps against small perturbations (ε = 0.1) but, in the settings of notebook 3 (σ = 1 blur, 4-bit depth), gives almost no protection at ε = 0.3. Only the strongest settings help at ε = 0.3 (1-bit reduction 82.30%, σ = 2 blur 37.15%), and only against an attacker who does not know about the preprocessing.
+- The ablation study shows that adversarial training needs a multi-step attack (1 step gives 0%, 3 steps 62.45%, 10 steps 80.40% after 2 epochs), a training budget at least as large as the attack budget, and a mix of clean and adversarial images.
+- Robustness evaluation is sensitive to the attack settings: removing PGD's random start lowered the PGD-trained model from 88.40% to 83.20%, so robust accuracy should be reported as the lowest value over several attack variants.
 - Differentially private training gives a formal privacy guarantee at a clear cost in accuracy.
 - Rate limiting slows model extraction but does not prevent it; watermarking does not prevent theft but lets the owner prove it.
 
